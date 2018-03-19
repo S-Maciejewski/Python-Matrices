@@ -70,9 +70,32 @@ def transpose(matrix):
     return tuple(new_matrix)
 
 
-mat = read_matrix()
-print_matrix(mat)
+def add_matrices(matrix1, matrix2):
+    if len(matrix1) != len(matrix2) or len(matrix1[0]) != len(matrix2[0]):
+        print("Matrices have different dimentions, addition is not possible")
+        return None
+    matrix = []
+    for i in range(0, len(matrix1)):
+        rows_tuple = (matrix1[i], matrix2[i])
+        matrix.append([sum(rows) for rows in zip(*rows_tuple)])
+    return tuple(matrix)
+
+
+def subtract_matrices(minuend, substrahend):
+    if len(minuend) != len(substrahend) or len(minuend[0]) != len(substrahend[0]):
+        print("Matrices have different dimentions, subtraction is not possible")
+        return None
+    matrix = []
+    for i in range(0, len(minuend)):
+        rows_tuple = (minuend[i], [-x for x in substrahend[i]])
+        matrix.append([sum(rows) for rows in zip(*rows_tuple)])
+    return tuple(matrix)
+
+
+mat1 = read_matrix()
+print_matrix(mat1)
+mat2 = read_matrix()
+print_matrix(mat2)
 print()
-mat = transpose(mat)
-print_matrix(mat)
+print_matrix(subtract_matrices(mat1, mat2))
 
