@@ -4,7 +4,7 @@ from random import randrange as rand
 def print_matrix(matrix):
     for i in range(0, len(matrix)):
         for j in range(0, len(matrix[0])):
-            print('{0: <7}'.format(matrix[i][j]), end='')
+            print('{0: < 7}'.format(matrix[i][j]), end='')
         print()
 
 
@@ -117,9 +117,11 @@ def matrix_multiplication(left_matrix, right_matrix):
     return tuple(matrix)
 
 
-mat1 = read_matrix()
-print_matrix(mat1)
-mat2 = read_matrix()
-print_matrix(mat2)
-print()
-print_matrix(matrix_multiplication(mat2, mat1))
+def matrix_power(matrix, power):
+    if len(matrix) != len(matrix[0]):
+        print("Matrix is not square, therefore it cannot be risen to power")
+        return ()
+    new_matrix = matrix
+    for i in range(1, power):
+        new_matrix = matrix_multiplication(new_matrix, matrix)
+    return tuple(new_matrix)
