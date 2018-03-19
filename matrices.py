@@ -19,7 +19,7 @@ def read_matrix():
     print("Enter matrix content one row at a time, values separated by comma ',', rows separated by enter")
     for i in range(0, rows):
         try:
-            row_string = input("Row " + str(i+1) + ": ")
+            row_string = input("Row " + str(i + 1) + ": ")
             row_string.replace(" ", "")
             row = [float(x) for x in row_string.split(',')]
             matrix.append(row)
@@ -84,11 +84,36 @@ def add_matrices(matrix1, matrix2):
 def subtract_matrices(minuend, substrahend):
     if len(minuend) != len(substrahend) or len(minuend[0]) != len(substrahend[0]):
         print("Matrices have different dimentions, subtraction is not possible")
-        return None
+        return ()
     matrix = []
     for i in range(0, len(minuend)):
         rows_tuple = (minuend[i], [-x for x in substrahend[i]])
         matrix.append([sum(rows) for rows in zip(*rows_tuple)])
+    return tuple(matrix)
+
+
+def scalar_multiplication(matrix, scalar):
+    new_matrix = []
+    for i in range(0, len(matrix)):
+        row = [x * scalar for x in matrix[i]]
+        new_matrix.append(row)
+    return tuple(new_matrix)
+
+
+def matrix_multiplication(left_matrix, right_matrix):
+    if len(left_matrix[0]) != len(right_matrix):
+        print("It is impossible to multiply those matrices in Couchy's way, as column amonunt "
+              "of left matrix is not equal row amount of right matrix")
+        return ()
+    matrix = []
+    for i in range(0, len(left_matrix)):
+        row = []
+        for j in range(0, len(right_matrix[0])):
+            value = 0.0
+            for k in range(0, len(left_matrix[0])):
+                value += left_matrix[i][k] * right_matrix[k][j]
+            row.append(value)
+        matrix.append(row)
     return tuple(matrix)
 
 
@@ -97,5 +122,4 @@ print_matrix(mat1)
 mat2 = read_matrix()
 print_matrix(mat2)
 print()
-print_matrix(subtract_matrices(mat1, mat2))
-
+print_matrix(matrix_multiplication(mat2, mat1))
