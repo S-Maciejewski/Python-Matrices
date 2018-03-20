@@ -48,12 +48,15 @@ def make_identity_matrix(size):
     return tuple(matrix)
 
 
-def make_random(rows, columns):
+def make_random_matrix(rows, columns, lower_bond=-1000, upper_bond=1000, fractions=False):
     matrix = []
     for i in range(0, rows):
         row = []
         for j in range(0, columns):
-            row.append(rand(-1000, 1000))
+            if not fractions:
+                row.append(rand(lower_bond, upper_bond))
+            else:
+                row.append(rand(lower_bond, upper_bond) + rand(0, 1000) / 1000)
         matrix.append(tuple(row))
     return tuple(matrix)
 
@@ -140,10 +143,9 @@ def determinant(matrix):
     value = 0.0
     for i in range(0, len(matrix)):
         value += ((-1)**i) * matrix[0][i] * determinant(compute_matrix_minor(matrix, 0, i))
-
     return value
 
 
-mat = read_matrix()
+mat = make_random_matrix(5, 5, 0, 1, True)
 print_matrix(mat)
 print("Matrix determinant is ", determinant(mat))
