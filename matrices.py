@@ -125,3 +125,25 @@ def matrix_power(matrix, power):
     for i in range(1, power):
         new_matrix = matrix_multiplication(new_matrix, matrix)
     return tuple(new_matrix)
+
+
+def compute_matrix_minor(matrix, i, j):
+    return [row[:j] + row[j+1:] for row in (matrix[:i]+matrix[i+1:])]
+
+
+def determinant(matrix):
+    if len(matrix) != len(matrix[0]):
+        print("Matrix is not square, therefore no determinant exists")
+        return 0
+    if len(matrix) == 2:
+        return matrix[0][0]*matrix[1][1]-matrix[0][1]*matrix[1][0]
+    value = 0.0
+    for i in range(0, len(matrix)):
+        value += ((-1)**i) * matrix[0][i] * determinant(compute_matrix_minor(matrix, 0, i))
+
+    return value
+
+
+mat = read_matrix()
+print_matrix(mat)
+print("Matrix determinant is ", determinant(mat))
