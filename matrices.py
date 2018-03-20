@@ -28,12 +28,22 @@ def read_matrix():
     return tuple(matrix)
 
 
-def make_empty_matrix(rows, columns):
+def make_zeros_matrix(rows, columns):
     matrix = []
     for i in range(0, rows):
         row = []
         for j in range(0, columns):
             row.append(0)
+        matrix.append(tuple(row))
+    return tuple(matrix)
+
+
+def make_ones_matrix(rows, columns):
+    matrix = []
+    for i in range(0, rows):
+        row = []
+        for j in range(0, columns):
+            row.append(1)
         matrix.append(tuple(row))
     return tuple(matrix)
 
@@ -134,6 +144,46 @@ def compute_matrix_minor(matrix, i, j):
     return [row[:j] + row[j + 1:] for row in (matrix[:i] + matrix[i + 1:])]
 
 
+def rank(matrix):
+    matrix = [list(row) for row in matrix]
+    column_count = len(matrix[0])
+    row_count = len(matrix)
+    rank = min(column_count, row_count)
+
+    if row_count > column_count:
+        new_matrix = []
+        for i in range(0, column_count):
+            new_row = []
+            for j in range(0, row_count):
+                new_row.append(matrix[j][i])
+            new_matrix.append(new_row)
+        matrix = new_matrix
+        column_count, row_count = row_count, column_count
+
+    for i in range(0, rank):
+        if matrix[i][i] != 0:
+            for j in range(i + 1, row_count):
+                for k in range(0, len(matrix[j])):
+                    matrix[j][k] += matrix[i][k] * (-(matrix[j][i] // matrix[i][i]))
+        else:
+            zero = True
+            for k in range(i + 1, row_count):
+                if matrix[k][i] != 0:
+                    matrix[k], matrix[i] = matrix[i], matrix[k]
+                    zero = False
+                    break
+            if zero:
+                for k in range(row_count):
+                    matrix[k][i], matrix[k][rank - 1] = matrix[k][rank - 1], matrix[k][i]
+            row_count -= 1
+        counted = 0
+        for j in matrix:
+            if j == [0] * column_count:
+                counted += 1
+
+        return rank - counted
+
+
 def determinant(matrix):
     if len(matrix) != len(matrix[0]):
         print("Matrix is not square, therefore no determinant exists")
@@ -169,7 +219,8 @@ def inverse_matrix(matrix):
     return tuple(cofactor_matrix)
 
 
+# Use example
 mat = make_random_matrix(3, 3, -10, 10)
 print_matrix(mat)
-print("Matrix determinant is ", determinant(mat), " and inverse matrix is")
+print("Matrix determinant is ", determinant(mat), ", rank is", rank(mat), " and inverse matrix is")
 print_matrix(inverse_matrix(mat))
