@@ -131,7 +131,7 @@ def matrix_power(matrix, power):
 
 
 def compute_matrix_minor(matrix, i, j):
-    return [row[:j] + row[j+1:] for row in (matrix[:i]+matrix[i+1:])]
+    return [row[:j] + row[j + 1:] for row in (matrix[:i] + matrix[i + 1:])]
 
 
 def determinant(matrix):
@@ -139,13 +139,37 @@ def determinant(matrix):
         print("Matrix is not square, therefore no determinant exists")
         return 0
     if len(matrix) == 2:
-        return matrix[0][0]*matrix[1][1]-matrix[0][1]*matrix[1][0]
+        return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
     value = 0.0
     for i in range(0, len(matrix)):
-        value += ((-1)**i) * matrix[0][i] * determinant(compute_matrix_minor(matrix, 0, i))
+        value += ((-1) ** i) * matrix[0][i] * determinant(compute_matrix_minor(matrix, 0, i))
     return value
 
 
-mat = make_random_matrix(5, 5, 0, 1, True)
+def inverse_matrix(matrix):
+    det = determinant(matrix)
+    if det == 0:
+        print("Determinant equals 0, therefore no inverse matrix exists")
+        return ()
+    if len(matrix) == 2:
+        return ((matrix[1][1] / det, -1 * matrix[0][1] / det),
+                (-1 * matrix[1][0] / det, matrix[0][0] / det))
+    cofactor_matrix = []
+    for i in range(len(matrix)):
+        row_cofactor = []
+        for j in range(len(matrix)):
+            minor = compute_matrix_minor(matrix, i, j)
+            row_cofactor.append(((-1) ** (i + j)) * determinant(minor))
+        cofactor_matrix.append(row_cofactor)
+    cofactor_matrix = list(transpose(cofactor_matrix))
+    cofactor_matrix = [list(row) for row in cofactor_matrix]
+    for i in range(len(cofactor_matrix)):
+        for j in range(len(cofactor_matrix)):
+            cofactor_matrix[i][j] = cofactor_matrix[i][j] / det
+    return tuple(cofactor_matrix)
+
+
+mat = make_random_matrix(3, 3, -10, 10)
 print_matrix(mat)
-print("Matrix determinant is ", determinant(mat))
+print("Matrix determinant is ", determinant(mat), " and inverse matrix is")
+print_matrix(inverse_matrix(mat))
